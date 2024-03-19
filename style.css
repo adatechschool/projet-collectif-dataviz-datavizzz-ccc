@@ -1,0 +1,10 @@
+body {
+    background:pink;
+    color: white;
+}
+.invisible{
+    display: none
+}
+.visible{
+    display: block
+}
