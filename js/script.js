@@ -11,6 +11,21 @@ function setup(){
 }
 
 function draw(){
-    background(0);
-    sphere(100);
+    background(255);
+    //sphere(100);
+    normalMaterial();
+  stroke(0);
+  
+  push();
+  rotateY(-millis()/1000);
+  sphere(80);
+  pop();
+  
+  push();
+  rotateY(-millis()/1000);
+  translate(200,0);
+  
+  fill(80,10,60);
+  sphere(40);
+  pop();
 }
