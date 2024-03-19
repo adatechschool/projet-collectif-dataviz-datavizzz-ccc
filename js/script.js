@@ -5,3 +5,12 @@ systemeAPI.then(response => {
 }).then(json => {
     console.log(json.bodies[0].name)
 })
+
+function setup(){
+    createCanvas(600, 600, WEBGL);
+}
+
+function draw(){
+    background(0);
+    sphere(100);
+}
