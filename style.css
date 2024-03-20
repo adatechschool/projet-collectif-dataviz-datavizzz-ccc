@@ -1,5 +1,5 @@
 body {
-    background:pink;
+    background:black;
     color: white;
 }
 .invisible{
@@ -7,4 +7,12 @@ body {
 }
 .visible{
     display: block
+}
+
+main {
+    position: sticky;
+}
+
+ul {
+    position: absolute;
 }
