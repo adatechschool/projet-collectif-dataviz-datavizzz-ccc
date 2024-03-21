@@ -2,6 +2,9 @@ const ulElement = document.querySelector("ul");
 const systemeAPI = fetch("https://api.le-systeme-solaire.net/rest/bodies/");
 let equaRadius = [];
 let aphelion = [];
+let semiMajorAxis = [];
+let sideralOrbit = [];
+
 
 systemeAPI.then(response => {
     return response.json();
@@ -11,8 +14,8 @@ for (n=0; n<json.bodies.length;n++){
     if (json.bodies[n].isPlanet === true){
         equaRadius.push(json.bodies[n].equaRadius);
         aphelion.push(json.bodies[n].aphelion);
-
-
+        semiMajorAxis.push(json.bodies[n].semimajorAxis);
+        sideralOrbit.push(json.bodies[n].sideralOrbit);
 
         const liElement = document.createElement("li");
         liElement.classList.add("visible");
@@ -22,7 +25,6 @@ for (n=0; n<json.bodies.length;n++){
         buttonPlanet.innerText = json.bodies[n].name;      
     }
 }
-
    
 })
 // buttonTerre.addEventListener("click",()=>{
@@ -83,22 +85,29 @@ function draw(){
     // sphere(15);
     // pop();
 
+    //translate(100,0);
     createPlanet();
 
 }
+console.log(semiMajorAxis);
+console.log(sideralOrbit);
 
 function createPlanet(){
-    translate(100,0);
+    let orbitSpeed = [];
     for (let i = 0; i < equaRadius.length; i++) {
+        orbitSpeed.push((2*Math.PI*semiMajorAxis[i]/sideralOrbit[i])/8640);
+        
+        rotateY(millis()/orbitSpeed[i]);
         push();
-
-        emissiveMaterial(255, 255, 100);
+        sphere(1);
+        emissiveMaterial(0,0,255);
         //console.log(aphelion[i]);
-        translate(aphelion[i]/10000000,0);
+        translate(aphelion[i]/10000000+100,0);
         sphere(equaRadius[i]/5000);
         pop();
         
     }
+    //console.log(orbitSpeed);
 };
 
 // ajuste la taille du sketch en fonction de la taille de la fenêtre
