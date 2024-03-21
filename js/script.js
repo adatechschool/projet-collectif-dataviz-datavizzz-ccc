@@ -4,7 +4,7 @@ let equaRadius = [];
 let aphelion = [];
 let semiMajorAxis = [];
 let sideralOrbit = [];
-
+const colorPlanet = [[174,233,255],[30,95,247],[238,200,112],[232,130,28],[201,164,62],[249,235,109],[116,116,213],[246,182,7]];
 
 systemeAPI.then(response => {
     return response.json();
@@ -65,7 +65,7 @@ function draw(){
     push();
     emissiveMaterial(255, 255, 100);
     rotateY(-millis()/30);
-    sphere(80);
+    sphere(70);
     pop();
     
 
@@ -93,6 +93,7 @@ console.log(semiMajorAxis);
 console.log(sideralOrbit);
 
 function createPlanet(){
+    //console.log(colorPlanet[0]);
     let orbitSpeed = [];
     for (let i = 0; i < equaRadius.length; i++) {
         orbitSpeed.push((2*Math.PI*semiMajorAxis[i]/sideralOrbit[i])/8640);
@@ -100,9 +101,9 @@ function createPlanet(){
         rotateY(millis()/orbitSpeed[i]);
         push();
         sphere(1);
-        emissiveMaterial(0,0,255);
+        emissiveMaterial(colorPlanet[i]);
         //console.log(aphelion[i]);
-        translate(aphelion[i]/10000000+100,0);
+        translate(aphelion[i]/10000000+120,0);
         sphere(equaRadius[i]/5000);
         pop();
         

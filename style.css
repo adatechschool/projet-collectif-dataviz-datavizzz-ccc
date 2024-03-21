@@ -1,6 +1,12 @@
 body {
     background:black;
     color: white;
+    background-image:url("background.png");
+}
+.div{
+    display: flex;
+    align-items: center;
+
 }
 .invisible{
     display: none
