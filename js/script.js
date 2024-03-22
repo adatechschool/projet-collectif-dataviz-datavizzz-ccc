@@ -1,5 +1,6 @@
 const ulElement = document.querySelector("ul");
 const systemeAPI = fetch("https://api.le-systeme-solaire.net/rest/bodies/");
+let orbitSpeed = [];
 let equaRadius = [];
 let aphelion = [];
 let semiMajorAxis = [];
@@ -16,7 +17,6 @@ for (n=0; n<json.bodies.length;n++){
         aphelion.push(json.bodies[n].aphelion);
         semiMajorAxis.push(json.bodies[n].semimajorAxis);
         sideralOrbit.push(json.bodies[n].sideralOrbit);
-
         const liElement = document.createElement("li");
         liElement.classList.add("visible");
         liElement.innerText = json.bodies[n].name;
@@ -52,16 +52,10 @@ function draw(){
     ambientLight(5, 5, 5); // white light
     pointLight(250, 250, 250, 0, 0, 200);
     noStroke();
-
-
-    
     fill(255);
     angleMode(DEGREES);
-    
-    
     translate(0,0,zoom.value());
     rotateX(-20);
-
     push();
     emissiveMaterial(255, 255, 100);
     rotateY(-millis()/30);
@@ -71,7 +65,7 @@ function draw(){
 
     // push();
     // specularMaterial(0, 0, 255, 10);
-    // //shininess(10);
+    // shininess(10);
     // rotateY(-millis()/30);
     // translate(400,0);
     // sphere(equaRadius[6]/500);
@@ -87,31 +81,28 @@ function draw(){
 
     //translate(100,0);
     createPlanet();
-
 }
-console.log(semiMajorAxis);
-console.log(sideralOrbit);
 
 function createPlanet(){
-    //console.log(colorPlanet[0]);
-    let orbitSpeed = [];
-    for (let i = 0; i < equaRadius.length; i++) {
-        orbitSpeed.push((2*Math.PI*semiMajorAxis[i]/sideralOrbit[i])/8640);
-        
+    calculOrbitSpeed()
+    for (let i = 0; i < equaRadius.length; i++){ 
         rotateY(millis()/orbitSpeed[i]);
         push();
         sphere(1);
         emissiveMaterial(colorPlanet[i]);
-        //console.log(aphelion[i]);
         translate(aphelion[i]/10000000+120,0);
         sphere(equaRadius[i]/5000);
-        pop();
-        
+        pop();   
     }
-    //console.log(orbitSpeed);
-};
+}
 
 // ajuste la taille du sketch en fonction de la taille de la fenêtre
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
   }
+
+  function calculOrbitSpeed(){
+    for (let i = 0; i < equaRadius.length; i++) {
+        orbitSpeed.push((2*Math.PI*semiMajorAxis[i]/sideralOrbit[i])/8640);
+  }
+}
