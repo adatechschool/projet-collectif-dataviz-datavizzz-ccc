@@ -32,9 +32,19 @@ systemeAPI.then(response => {
  */
 function setup(){
     createCanvas(windowWidth, windowHeight, WEBGL);
+    createSliders()
+}
+
+function createSliders(){
     zoom = createSlider(0,700,0,1);
-    zoom.position(windowWidth-300,100);
+    zoom.position(windowWidth-300,800);
     zoom.size(200);
+    translateX = createSlider(-500,500,0,1);
+    translateX.position(windowWidth-600,800)
+    translateX.size(200)
+    orbitSpeedSlider = createSlider(0,1,1,0.001)
+    orbitSpeedSlider.position(windowWidth-900,800)
+    orbitSpeedSlider.size(200)    
 }
 
 /**
@@ -47,14 +57,13 @@ function draw(){
     noStroke();
     fill(255);
     angleMode(DEGREES);
-    translate(0,0,zoom.value());
+    translate(-translateX.value(),0,zoom.value());
     rotateX(-20);
     push();
     emissiveMaterial(255, 255, 100);
     rotateY(-millis()/30);
     sphere(70);
     pop();
-
     createPlanet();
 }
 /**
@@ -65,7 +74,8 @@ function createPlanet(){
         calculOrbitSpeed()
     }
     for (let i = 0; i < equaRadius.length; i++){ 
-        rotateY(millis()/orbitSpeed[i]);
+        rotateY(millis()/orbitSpeed[i]*orbitSpeedSlider.value());
+        console.log(millis());
         push();
         sphere(1);
         emissiveMaterial(colorPlanet[i]);
