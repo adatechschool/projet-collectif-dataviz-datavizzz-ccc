@@ -27,3 +27,8 @@ body {
 }.planetButton{
     font-family: "Fira Code", monospace;
 }
+#info-planet {
+    position: absolute;
+    right: 0;
+    text-align: right;
+}
