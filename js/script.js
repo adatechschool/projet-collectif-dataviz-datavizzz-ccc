@@ -14,12 +14,9 @@ systemeAPI.then(response => {
         if (element.isPlanet === true){
             listeObjects.push(element)
             addColorAndOrbitSpeed(listeObjects, orbitSpeed);
-            const liElement = document.createElement("li");
-            liElement.classList.add("visible");
-            liElement.innerText = element.name;
-            ulElement.appendChild(liElement);  
         }
     });
+    createPlanetList(listeObjects)
 })
 
 /**
@@ -79,14 +76,14 @@ function createPlanet(){
 
 /**
  * Ajuste la taille du sketch en fonction de la taille de la fenêtre
- */
+*/
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
 }
 
 /**
  * Calcul la vitesse orbital des sphères
- */
+*/
 function calculOrbitSpeed(json){
     let orbitSpeed = []
     for (let i = 0; i < json.length; i++) {
@@ -99,10 +96,25 @@ function calculOrbitSpeed(json){
 
 /**
  * Ajoute les données 'colorPlanet' et 'orbitSpeed' à la liste des objets
- */
+*/
 function addColorAndOrbitSpeed(listeObjects,orbitSpeed){
     for (i = 0; i < listeObjects.length; i++) {
         listeObjects[i].colorPlanet = colorPlanet[i]
         listeObjects[i].orbitSpeed = orbitSpeed[i]
     }
+}
+
+function createPlanetList(listeObjects){
+    const copyListeObjects = [...listeObjects]
+    copyListeObjects.sort((a, b) => a.aphelion - b.aphelion);
+    copyListeObjects.forEach(element => {
+        const liElement = document.createElement("li");
+        const planetButton = document.createElement("button");
+        liElement.classList.add("visible");
+        planetButton.classList.add(element.id)
+        planetButton.innerText = element.name;
+        ulElement.appendChild(liElement); 
+        liElement.appendChild(planetButton);
+    });
+    
 }
