@@ -18,6 +18,7 @@ body {
     display: block;
 }main {
     position: absolute;
+    z-index: -1;
 }.index-planet {
     position: absolute;
     background: black;
@@ -26,6 +27,7 @@ body {
     line-height: 1.7em;
 }.planetButton{
     font-family: "Fira Code", monospace;
+    z-index: 1;
 }
 #info-planet {
     position: absolute;

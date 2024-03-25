@@ -105,16 +105,31 @@ function addColorAndOrbitSpeed(listeObjects,orbitSpeed){
 }
 
 function createPlanetList(listeObjects){
+    let buttonArray= [];
     const copyListeObjects = [...listeObjects]
     copyListeObjects.sort((a, b) => a.aphelion - b.aphelion);
     copyListeObjects.forEach(element => {
         const liElement = document.createElement("li");
         const planetButton = document.createElement("button");
         liElement.classList.add("visible");
-        planetButton.classList.add(element.id)
+        planetButton.setAttribute("id",element.id);
         planetButton.innerText = element.name;
         ulElement.appendChild(liElement); 
         liElement.appendChild(planetButton);
-    });
+        buttonArray.push(planetButton)
+    })
+    const divPlanetInfo = document.getElementById("info-planet");
+    console.log(buttonArray);
+
+    
+    mercureButton.addEventListener("click",()=> {
+    
+        divPlanetInfo.classList.remove("invisible");
+        divPlanetInfo.classList.add("visible");
+
+        divPlanetInfo.innerText = copyListeObjects[0].name;
+
+    })
     
 }
+
