@@ -82,6 +82,7 @@ function windowResized() {
 }
 
 /**
+ * @param {Array} json 
  * Calcul la vitesse orbital des sphères
 */
 function calculOrbitSpeed(json){
@@ -95,6 +96,8 @@ function calculOrbitSpeed(json){
 }
 
 /**
+ * @param {Array} listObjects
+ * @param {Number} orbitSpeed  
  * Ajoute les données 'colorPlanet' et 'orbitSpeed' à la liste des objets
 */
 function addColorAndOrbitSpeed(listObjects,orbitSpeed){
@@ -104,6 +107,9 @@ function addColorAndOrbitSpeed(listObjects,orbitSpeed){
     }
 }
 
+/**
+ * @param {Array} listObjects 
+ */
 function createPlanetList(listObjects){
     let buttonArray= [];
     const copyListObjects = [...listObjects]
@@ -128,6 +134,10 @@ function createPlanetList(listObjects){
     }    
 }
 
+/**
+ * @param {String} planet 
+ * @param {Array} listPlanets 
+ */
 function displayPlanetInfo(planet, listPlanets){
     const whiteList = ['name', 'englishName', 'perihelion', 'aphelion', 'inclination', 'density', 'gravity', 'meanRadius', 'sideralOrbit', 'sideralRotation', 'discoveredBy', 'bodyType', 'discoveryDate']
     const divPlanetInfo = document.getElementById("info-planet");
@@ -151,4 +161,6 @@ function displayPlanetInfo(planet, listPlanets){
     })
     
 }
+
+
 
