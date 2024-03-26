@@ -4,12 +4,26 @@ body {
     /* background-image:url("background.png"); */
     font-family: "Fira Code", monospace;
 }h1 {
-    font-size: 2em;
+    font-size: 1.8em;
     text-align: center;
     width: 100vw;
     position: absolute;
     font-weight: 100;
-}.div{
+    padding-bottom: 8px;
+    color: lime;
+}
+
+h1:before{
+    content: '___________________======[' ;
+    color: white;
+}
+
+h1:after{
+    content: ']======___________________';
+    color: white;
+}
+
+.div{
     display: flex;
     align-items: center;}
 .invisible{
