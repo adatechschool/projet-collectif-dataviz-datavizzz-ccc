@@ -1,7 +1,7 @@
 const ulElement = document.querySelector("ul");
 const systemeAPI = fetch("https://api.le-systeme-solaire.net/rest/bodies/");
 const colorPlanet = [[174,233,255],[30,95,247],[238,200,112],[232,130,28],[201,164,62],[249,235,109],[116,116,213],[246,182,7]];
-let listeObjects = [];
+let listObjects = [];
 
 /**
  * Créer le lien avec l'API et récupère les données.
@@ -12,11 +12,11 @@ systemeAPI.then(response => {
     const orbitSpeed = calculOrbitSpeed(json.bodies)
     json.bodies.forEach(element => {
         if (element.isPlanet === true){
-            listeObjects.push(element)
-            addColorAndOrbitSpeed(listeObjects, orbitSpeed);
+            listObjects.push(element)
+            addColorAndOrbitSpeed(listObjects, orbitSpeed);
         }
     });
-    createPlanetList(listeObjects)
+    createPlanetList(listObjects)
 })
 
 /**
@@ -63,13 +63,13 @@ function draw(){
  * Lance le calcul de la vitesse orbital, une fois terminé, créée les planetes
 */
 function createPlanet(){
-    for (let i = 0; i < listeObjects.length; i++){
-        rotateY(millis()/listeObjects[i].orbitSpeed*orbitSpeedSlider.value());
+    for (let i = 0; i < listObjects.length; i++){
+        rotateY(millis()/listObjects[i].orbitSpeed*orbitSpeedSlider.value());
         push();
         sphere(1);
-        emissiveMaterial(listeObjects[i].colorPlanet);
-        translate(listeObjects[i].aphelion/10000000+120,0);
-        sphere(listeObjects[i].equaRadius/5000);
+        emissiveMaterial(listObjects[i].colorPlanet);
+        translate(listObjects[i].aphelion/10000000+120,0);
+        sphere(listObjects[i].equaRadius/5000);
         pop();
     }
 }
@@ -97,18 +97,18 @@ function calculOrbitSpeed(json){
 /**
  * Ajoute les données 'colorPlanet' et 'orbitSpeed' à la liste des objets
 */
-function addColorAndOrbitSpeed(listeObjects,orbitSpeed){
-    for (i = 0; i < listeObjects.length; i++) {
-        listeObjects[i].colorPlanet = colorPlanet[i]
-        listeObjects[i].orbitSpeed = orbitSpeed[i]
+function addColorAndOrbitSpeed(listObjects,orbitSpeed){
+    for (i = 0; i < listObjects.length; i++) {
+        listObjects[i].colorPlanet = colorPlanet[i]
+        listObjects[i].orbitSpeed = orbitSpeed[i]
     }
 }
 
-function createPlanetList(listeObjects){
+function createPlanetList(listObjects){
     let buttonArray= [];
-    const copyListeObjects = [...listeObjects]
-    copyListeObjects.sort((a, b) => a.aphelion - b.aphelion);
-    copyListeObjects.forEach(element => {
+    const copyListObjects = [...listObjects]
+    copyListObjects.sort((a, b) => a.aphelion - b.aphelion);
+    copyListObjects.forEach(element => {
         const liElement = document.createElement("li");
         const planetButton = document.createElement("button");
         liElement.classList.add("visible");
@@ -118,17 +118,32 @@ function createPlanetList(listeObjects){
         liElement.appendChild(planetButton);
         buttonArray.push(planetButton)
     })
-    const divPlanetInfo = document.getElementById("info-planet");
-    console.log(buttonArray);
 
     
-    mercureButton.addEventListener("click",()=> {
-    
-        divPlanetInfo.classList.remove("invisible");
-        divPlanetInfo.classList.add("visible");
+    for(i=0; i<copyListObjects.length; i++){
+        console.log(buttonArray[i])
+        buttonArray[i].addEventListener("click",(e)=> {
+            const planet = e.target.id;
+            displayPlanetInfo(planet, copyListObjects);        
+        })
+    }    
+}
 
-        divPlanetInfo.innerText = copyListeObjects[0].name;
-
+function displayPlanetInfo(planet, listPlanets){
+    listPlanets.forEach(element =>{
+        if (element.id === planet){
+            for(const [key, value] of Object.entries(element)) {
+                console.log(key)
+                const divPlanetInfo = document.getElementById("info-planet");
+                const pElement = document.createElement("p");
+                pElement.classList.add("visible")
+                divPlanetInfo.classList.remove("invisible");
+                divPlanetInfo.classList.add("visible");
+                divPlanetInfo.appendChild(pElement);
+                pElement.innerText = key + " = " +value;
+                // pElement.innerText += element.i;
+            }
+        }
     })
     
 }
