@@ -119,29 +119,33 @@ function createPlanetList(listObjects){
         buttonArray.push(planetButton)
     })
 
-    
     for(i=0; i<copyListObjects.length; i++){
         console.log(buttonArray[i])
         buttonArray[i].addEventListener("click",(e)=> {
             const planet = e.target.id;
-            displayPlanetInfo(planet, copyListObjects);        
+            displayPlanetInfo(planet, copyListObjects);  
         })
     }    
 }
 
 function displayPlanetInfo(planet, listPlanets){
+    const whiteList = ['name', 'englishName', 'perihelion', 'aphelion', 'inclination', 'density', 'gravity', 'meanRadius', 'sideralOrbit', 'sideralRotation', 'discoveredBy', 'bodyType', 'discoveryDate']
+    const divPlanetInfo = document.getElementById("info-planet");
+    divPlanetInfo.innerText = "";
     listPlanets.forEach(element =>{
         if (element.id === planet){
             for(const [key, value] of Object.entries(element)) {
-                console.log(key)
-                const divPlanetInfo = document.getElementById("info-planet");
-                const pElement = document.createElement("p");
-                pElement.classList.add("visible")
-                divPlanetInfo.classList.remove("invisible");
-                divPlanetInfo.classList.add("visible");
-                divPlanetInfo.appendChild(pElement);
-                pElement.innerText = key + " = " +value;
-                // pElement.innerText += element.i;
+                for (i=0; i<key.length; i++){
+                    if (key === whiteList[i]) {
+                        console.log(key)
+                        const pElement = document.createElement("p");
+                        divPlanetInfo.classList.remove("invisible");
+                        divPlanetInfo.classList.add("visible");
+                        divPlanetInfo.appendChild(pElement);
+                        pElement.innerText = key + " = " + value;
+                    }
+                }
+                    
             }
         }
     })
