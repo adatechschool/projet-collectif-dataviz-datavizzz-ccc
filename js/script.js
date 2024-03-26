@@ -32,14 +32,17 @@ function setup(){
  */
 function createSliders(){
     zoom = createSlider(0,700,0,1);
-    zoom.position(windowWidth-300,800);
+    zoom.position(windowWidth/4,windowHeight-100);
     zoom.size(200);
+    zoom.addClass('slider')
     translateX = createSlider(-500,500,0,1);
-    translateX.position(windowWidth-600,800)
-    translateX.size(200)
-    orbitSpeedSlider = createSlider(0,1,1,0.001)
-    orbitSpeedSlider.position(windowWidth-900,800)
-    orbitSpeedSlider.size(200)    
+    translateX.position(windowWidth/2-100,windowHeight-100);
+    translateX.size(200);
+    translateX.addClass('slider')
+    orbitSpeedSlider = createSlider(0,1,1,0.001);
+    orbitSpeedSlider.position(windowWidth/1.6,windowHeight-100);
+    orbitSpeedSlider.size(200);  
+    orbitSpeedSlider.addClass('slider')
 }
 
 /**
@@ -126,6 +129,7 @@ function createPlanetList(listObjects){
         liElement.classList.add("visible");
         planetButton.setAttribute("id",element.id);
         planetButton.innerText = element.name;
+        planetButton.classList.add("planet-button");
         ulElement.appendChild(liElement); 
         liElement.appendChild(planetButton);
         buttonArray.push(planetButton)
@@ -149,6 +153,7 @@ function displayPlanetInfo(planet, listPlanets){
     const whiteList = ['name', 'englishName', 'perihelion', 'aphelion', 'inclination', 'density', 'gravity', 'meanRadius', 'sideralOrbit', 'sideralRotation', 'discoveredBy', 'bodyType', 'discoveryDate']
     const divPlanetInfo = document.getElementById("info-planet");
     divPlanetInfo.innerText = "";
+    
     listPlanets.forEach(element =>{
         if (element.id === planet){
             for(const [key, value] of Object.entries(element)) {
@@ -156,10 +161,16 @@ function displayPlanetInfo(planet, listPlanets){
                     if (key === whiteList[i]) {
                         console.log(key)
                         const pElement = document.createElement("p");
+                        const titreElement = document.createElement("span");
+                        const valueElement = document.createElement("span");
                         divPlanetInfo.classList.remove("invisible");
                         divPlanetInfo.classList.add("visible");
+                        titreElement.classList.add("titre")
+                        titreElement.innerText = key
+                        valueElement.innerText = value
+                        pElement.appendChild(titreElement)
+                        pElement.appendChild(valueElement)
                         divPlanetInfo.appendChild(pElement);
-                        pElement.innerText = key + " = " + value;
                     }
                 }
                     
