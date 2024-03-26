@@ -8,6 +8,7 @@ body {
     text-align: center;
     width: 100vw;
     position: absolute;
+    font-weight: 100;
 }.div{
     display: flex;
     align-items: center;}
@@ -21,7 +22,6 @@ body {
     z-index: -1;
 }.index-planet {
     position: absolute;
-    background: black;
     margin : 0;
     font-size: 2.2em;
     line-height: 1.7em;
@@ -87,4 +87,16 @@ body {
     content: " ▶";
     color: grey;
     
+}
+
+#slider-box {
+    position: absolute;
+    top: 82vh;
+    left: 28vw;
+    color: lime;
+}
+
+#slider-box li{
+    display: inline;
+    margin-right: 13.5vw;
 }

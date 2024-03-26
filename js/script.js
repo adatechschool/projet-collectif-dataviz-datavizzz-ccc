@@ -66,7 +66,7 @@ function draw(){
 }
 
 /**
- * Lance le calcul de la vitesse orbital, une fois terminé, créée les planetes
+ * Créée les planètes les unes après les autres
 */
 function createPlanet(){
     for (let i = 0; i < listObjects.length; i++){
