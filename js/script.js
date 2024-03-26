@@ -27,6 +27,9 @@ function setup(){
     createSliders()
 }
 
+/**
+ * Créé les sliders
+ */
 function createSliders(){
     zoom = createSlider(0,700,0,1);
     zoom.position(windowWidth-300,800);
@@ -82,7 +85,7 @@ function windowResized() {
 }
 
 /**
- * @param {Array} json 
+ * @param {Array} json Tableau contenant tout les objets de l'API
  * Calcul la vitesse orbital des sphères
 */
 function calculOrbitSpeed(json){
@@ -96,8 +99,8 @@ function calculOrbitSpeed(json){
 }
 
 /**
- * @param {Array} listObjects
- * @param {Number} orbitSpeed  
+ * @param {Array} listObjects Tableau contenant toute les planetes
+ * @param {Array} orbitSpeed  Tableau contenant toute les vitesses orbital
  * Ajoute les données 'colorPlanet' et 'orbitSpeed' à la liste des objets
 */
 function addColorAndOrbitSpeed(listObjects,orbitSpeed){
@@ -108,7 +111,10 @@ function addColorAndOrbitSpeed(listObjects,orbitSpeed){
 }
 
 /**
- * @param {Array} listObjects 
+ * @param {Array} listObjects Tableau contenant toute les planetes
+ * Range les planetes dans l'ordre croissant de leurs aphelion, 
+ * créé la balise <li> ainsi que les boutons
+ * AddEventListener pour chaque boutons
  */
 function createPlanetList(listObjects){
     let buttonArray= [];
@@ -135,8 +141,9 @@ function createPlanetList(listObjects){
 }
 
 /**
- * @param {String} planet 
- * @param {Array} listPlanets 
+ * @param {String} planet Chaine de caractère représantant le nom des planetes
+ * @param {Array} listPlanets Copie du tableau contenant toute les planetes
+ * Fonction appelée lors du 'click' et affiche les infos choisis préalablement choisis
  */
 function displayPlanetInfo(planet, listPlanets){
     const whiteList = ['name', 'englishName', 'perihelion', 'aphelion', 'inclination', 'density', 'gravity', 'meanRadius', 'sideralOrbit', 'sideralRotation', 'discoveredBy', 'bodyType', 'discoveryDate']
