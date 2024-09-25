@@ -24,25 +24,34 @@ systemeAPI.then(response => {
 */
 function setup(){
     createCanvas(windowWidth, windowHeight, WEBGL);
-    createSliders()
+    createSliders();
 }
 
 /**
  * Créé les sliders
  */
-function createSliders(){
-    zoom = createSlider(0,700,0,1);
-    zoom.position(windowWidth/4,windowHeight-100);
-    zoom.size(200);
-    zoom.addClass('slider')
-    translateX = createSlider(-500,500,0,1);
-    translateX.position(windowWidth/2-100,windowHeight-100);
-    translateX.size(200);
-    translateX.addClass('slider')
-    orbitSpeedSlider = createSlider(0,1,1,0.001);
-    orbitSpeedSlider.position(windowWidth/1.6,windowHeight-100);
-    orbitSpeedSlider.size(200);  
-    orbitSpeedSlider.addClass('slider')
+function createSliders() {
+    
+    // Create sliders
+    zoom = createSlider(0, 700, 0, 1);
+    zoom.parent('zoom-slider');
+    zoom.class('slider');
+
+    translateX = createSlider(-500, 500, 0, 1);
+    translateX.parent('translate-slider');
+    translateX.class('slider');
+
+    orbitSpeedSlider = createSlider(0, 1, 1, 0.001);
+    orbitSpeedSlider.parent('orbit-speed-slider');
+    orbitSpeedSlider.class('slider');
+
+    // Array of sliders for easy iteration if needed
+    let sliders = [zoom, translateX, orbitSpeedSlider];
+
+    // Additional configuration can be done here if needed
+    sliders.forEach(slider => {
+        slider.style('width', '100%');
+    });
 }
 
 /**
