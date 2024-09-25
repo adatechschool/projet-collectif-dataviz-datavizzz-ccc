@@ -1,8 +1,8 @@
 body {
     background:black;
     color: white;
-    /* background-image:url("background.png"); */
     font-family: "Fira Code", monospace;
+    overflow: hidden;
 }
 
 h1 {
@@ -33,17 +33,80 @@ h1:after{
 }
 .visible{
     display: block;
-}main {
+}
+
+main {
     position: absolute;
     z-index: -1;
-}.index-planet {
+}
+
+.planet-window {
+    position: fixed;
+    top: 50%;
+    left: 20%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    border: 1px solid lime;
+    padding: 20px;
+    min-width: 200px;
+    max-width: 80%;
+    max-height: 80vh;
+    overflow-y: auto;
+    color: white;
+    z-index: 1000;
+}
+
+.planet-content {
+    width: 100%;
+}
+
+.hidden {
+    display: none;
+}
+
+.back-button {
+    background-color: transparent;
+    border: 1px solid lime;
+    color: lime;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.back-button:hover {
+    background-color: lime;
+    color: black;
+}
+
+#planet-buttons {
+    list-style-type: none;
+    padding: 0;
+}
+
+#planet-buttons li {
+    margin-bottom: 10px;
+}
+
+#info-content p {
+    margin: 5px 0;
+}
+
+.titre {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.index-planet {
     position: absolute;
     margin : 0;
     font-size: 2.2em;
     line-height: 1.7em;
     margin-top: 10vh;
-}.planet-button{
+}
+
+.planet-button{
     font-family: "Fira Code", monospace;
+    font-size: 1.2em;
     z-index: 1;
     background-color:transparent; /* Green */
     border: 1.5px solid grey;
@@ -52,12 +115,27 @@ h1:after{
     text-align: center;
     text-decoration: none;
 }
+
 .planet-button:hover{
     color: lime;
     border: 1.5px solid lime;
     padding: 7px 17px;
     cursor: pointer; /* Cursor on hover */
 }
+
+.toggle-button {
+    position: fixed;
+    bottom: 50px;
+    left: 20px;
+    color: lime;
+    border: 1.5px solid lime;
+    background: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
 #info-planet {
     position: absolute;
     color: lime;
@@ -147,8 +225,9 @@ h1:after{
 }
 
 
-@media only screen and (max-width: 600px) {
-    body{margin: 0;}
+@media only screen and (max-width: 768px) {
+    body{margin: 0;
+    width: 100vw;}
     h1:before{
         content: '_=[' ;
         color: white;
@@ -179,14 +258,33 @@ h1:after{
 
     #slider-container {
         flex-direction: column;
-        align-items: center;
+        align-items: right;
         bottom: 1vh;
     }
 
     .slider-group {
-        width: 80%;
+        width: 50%;
         max-width: none;
         margin: 10px 0;
     }
 
+    .planet-window {
+        top: 6vh;
+        left: 5vw;
+        transform: none;
+        width: 80vw;
+        height: 80vh;
+        max-width: none;
+        max-height: none;
+    }
+
+    .toggle-button {
+        display: block;
+        bottom: 30px;
+    }
+}
+@media (min-width: 769px) {
+    .toggle-button {
+        display: none;
+    }
 }

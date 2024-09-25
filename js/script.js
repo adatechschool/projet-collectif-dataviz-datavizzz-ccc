@@ -2,6 +2,7 @@ const ulElement = document.querySelector("ul");
 const systemeAPI = fetch("https://api.le-systeme-solaire.net/rest/bodies/");
 const colorPlanet = [[174,233,255],[30,95,247],[238,200,112],[232,130,28],[201,164,62],[249,235,109],[116,116,213],[246,182,7]];
 let listObjects = [];
+let planetWindow, planetList, planetInfo, backButton, toggleButton;
 
 /**
  * Créer le lien avec l'API et récupère les données.
@@ -25,6 +26,15 @@ systemeAPI.then(response => {
 function setup(){
     createCanvas(windowWidth, windowHeight, WEBGL);
     createSliders();
+    planetWindow = document.getElementById("planet-window");
+    planetList = document.getElementById("planet-list");
+    planetInfo = document.getElementById("planet-info");
+    backButton = document.getElementById("back-button");
+    toggleButton = document.getElementById("toggle-planet-window");
+
+    backButton.addEventListener("click", showPlanetList);
+    toggleButton.addEventListener("click", togglePlanetWindow);
+
 }
 
 /**
@@ -52,6 +62,17 @@ function createSliders() {
     sliders.forEach(slider => {
         slider.style('width', '100%');
     });
+}
+
+function togglePlanetWindow() {
+    console.log("youpi")
+    if (planetWindow.classList.contains("hidden")) {
+        planetWindow.classList.remove("hidden");
+        toggleButton.textContent = "Hide Planets";
+    } else {
+        planetWindow.classList.add("hidden");
+        toggleButton.textContent = "Show Planets";
+    }
 }
 
 /**
@@ -132,25 +153,32 @@ function createPlanetList(listObjects){
     let buttonArray= [];
     const copyListObjects = [...listObjects]
     copyListObjects.sort((a, b) => a.aphelion - b.aphelion);
+    const ulElement = document.getElementById("planet-buttons");
+    ulElement.innerHTML = ""; // Vider la liste existante
+   
     copyListObjects.forEach(element => {
         const liElement = document.createElement("li");
         const planetButton = document.createElement("button");
-        liElement.classList.add("visible");
+        // liElement.classList.add("visible");
         planetButton.setAttribute("id",element.id);
         planetButton.innerText = element.name;
         planetButton.classList.add("planet-button");
         ulElement.appendChild(liElement); 
         liElement.appendChild(planetButton);
         buttonArray.push(planetButton)
-    })
+    });
 
     for(i=0; i<copyListObjects.length; i++){
-        console.log(buttonArray[i])
         buttonArray[i].addEventListener("click",(e)=> {
             const planet = e.target.id;
             displayPlanetInfo(planet, copyListObjects);  
-        })
-    }    
+        });
+    }
+    showPlanetList();
+    if (window.innerWidth <= 768) {
+        planetWindow.classList.add("hidden"); // Initially hide on mobile
+    }
+
 }
 
 /**
@@ -160,34 +188,43 @@ function createPlanetList(listObjects){
  */
 function displayPlanetInfo(planet, listPlanets){
     const whiteList = ['name', 'englishName', 'perihelion', 'aphelion', 'inclination', 'density', 'gravity', 'meanRadius', 'sideralOrbit', 'sideralRotation', 'discoveredBy', 'bodyType', 'discoveryDate']
-    const divPlanetInfo = document.getElementById("info-planet");
-    divPlanetInfo.innerText = "";
+    const infoContent = document.getElementById("info-content");
+    infoContent.innerText = "";
     
     listPlanets.forEach(element =>{
         if (element.id === planet){
             for(const [key, value] of Object.entries(element)) {
                 for (i=0; i<key.length; i++){
                     if (key === whiteList[i]) {
-                        console.log(key)
                         const pElement = document.createElement("p");
                         const titreElement = document.createElement("span");
                         const valueElement = document.createElement("span");
-                        divPlanetInfo.classList.remove("invisible");
-                        divPlanetInfo.classList.add("visible");
                         titreElement.classList.add("titre")
                         titreElement.innerText = key
                         valueElement.innerText = value
                         pElement.appendChild(titreElement)
                         pElement.appendChild(valueElement)
-                        divPlanetInfo.appendChild(pElement);
+                        infoContent.appendChild(pElement);
                     }
                 }
                     
             }
         }
     })
-    
+    showPlanetInfo();
+    if (window.innerWidth <= 768) {
+        planetWindow.classList.remove("hidden"); // Show window when displaying planet info
+    }
 }
 
+function showPlanetList() {
+    planetList.classList.remove("hidden");
+    planetInfo.classList.add("hidden");
+}
+
+function showPlanetInfo() {
+    planetList.classList.add("hidden");
+    planetInfo.classList.remove("hidden");
+}
 
 
