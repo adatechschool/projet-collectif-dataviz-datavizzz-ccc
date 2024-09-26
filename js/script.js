@@ -1,6 +1,14 @@
 const ulElement = document.querySelector("ul");
 const systemeAPI = fetch("https://api.le-systeme-solaire.net/rest/bodies/");
 const colorPlanet = [[174,233,255],[30,95,247],[238,200,112],[232,130,28],[201,164,62],[249,235,109],[116,116,213],[246,182,7]];
+const mockPlanetData = {
+    "mercure": { discoveredBy: "Anciens Sumériens", discoveryDate: "3000 av. J.-C." },
+    "venus": { discoveredBy: "Anciens Babyloniens", discoveryDate: "1600 av. J.-C." },
+    "terre": { discoveredBy: "N/A", discoveryDate: "N/A" },
+    "mars": { discoveredBy: "Anciens Égyptiens", discoveryDate: "1534 av. J.-C." },
+    "jupiter": { discoveredBy: "Anciens Babyloniens", discoveryDate: "VIIe siècle av. J.-C." },
+    "saturne": { discoveredBy: "Anciens Assyriens", discoveryDate: "VIIIe siècle av. J.-C." }
+};
 let listObjects = [];
 let planetWindow, planetList, planetInfo, backButton, toggleButton;
 let stars = [];
@@ -9,8 +17,8 @@ let cameraX = 0;
 let cameraY = 0;
 let cameraSpeed = 5;
 
-let cols = 50;
-let rows = 50;
+let cols = 40;
+let rows = 40;
 let vertices = [];
 
 /**
@@ -42,8 +50,8 @@ function setup(){
     // Create stars
     for (let i = 0; i < 300; i++) {
         stars[i] = new Star(
-        random(-width/2, width/2),  // x position
-        random(-height/2, height/2), // y position
+        random(-width/1.5, width/1.5),  // x position
+        random(-height/1.5, height/1.5), // y position
         random(-500, 0),  // z position (depth)
         random(255),  // color
         random(0.1, 3),  // twinkle speed
@@ -72,11 +80,11 @@ function setup(){
 function createSliders() {
     
     // Create sliders
-    zoom = createSlider(0, 700, 0, 1);
+    zoom = createSlider(0, 600, 0, 1);
     zoom.parent('zoom-slider');
     zoom.class('slider');
 
-    orbitSpeedSlider = createSlider(0, 1, 1, 0.001);
+    orbitSpeedSlider = createSlider(0, 0.8, 0.4, 0.001);
     orbitSpeedSlider.parent('orbit-speed-slider');
     orbitSpeedSlider.class('slider');
 
@@ -90,7 +98,6 @@ function createSliders() {
 }
 
 function togglePlanetWindow() {
-    console.log("youpi")
     if (planetWindow.classList.contains("hidden")) {
         planetWindow.classList.remove("hidden");
         toggleButton.textContent = "Hide Planets";
@@ -132,7 +139,7 @@ function draw() {
     translate(cameraX, cameraY, zoom.value());
     rotateX(-20);
     push();
-    rotateY(-millis()/30);
+    rotateY(millis()/100);
     drawSun();
     pop();
     createPlanet();
@@ -318,7 +325,10 @@ function displayPlanetInfo(planet, listPlanets){
     
     listPlanets.forEach(element =>{
         if (element.id === planet){
-            for(const [key, value] of Object.entries(element)) {
+            // Merge mock data with API data
+            const mergedElement = { ...element, ...mockPlanetData[element.id] };
+
+            for(const [key, value] of Object.entries(mergedElement)) {
                 for (i=0; i<key.length; i++){
                     if (key === whiteList[i]) {
                         const pElement = document.createElement("p");

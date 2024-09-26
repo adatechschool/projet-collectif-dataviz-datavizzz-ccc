@@ -9,7 +9,6 @@ h1 {
     font-size: 1.8em;
     text-align: center;
     width: 100vw;
-    /* position: absolute; */
     font-weight: 100;
     padding-bottom: 8px;
     color: lime;
@@ -43,9 +42,9 @@ main {
 .planet-window {
     position: fixed;
     top: 50%;
-    left: 10%;
+    left: 15%;
     transform: translate(-50%, -50%);
-    background-color: rgba(0, 0, 0, 0.8);
+    background: transparent;
     border: 1px solid lime;
     padding: 20px;
     min-width: 200px;
@@ -88,7 +87,8 @@ main {
 }
 
 #info-content p {
-    margin: 5px 0;
+    margin: 15px 0;
+
 }
 
 .titre {
@@ -108,18 +108,20 @@ main {
     font-family: "Fira Code", monospace;
     font-size: 1.2em;
     z-index: 1;
-    background-color:transparent; /* Green */
+    background-color: rgba(0, 0, 0, 0.8);
     border: 1.5px solid grey;
     color: white;
     padding: 5px 15px;
+    margin-bottom: 20px;
     text-align: center;
     text-decoration: none;
+    border-radius: 20px;
 }
 
 .planet-button:hover{
     color: lime;
     border: 1.5px solid lime;
-    padding: 7px 17px;
+    /* padding: 7px 17px; */
     cursor: pointer; /* Cursor on hover */
 }
 
@@ -213,18 +215,6 @@ main {
 }
 
 
-#info-planet .titre{
-    color: white;
-    margin-right: 10px;
-}
-
-#info-planet .titre:after{
-    content: " ▶";
-    color: grey;
-    
-}
-
-
 @media only screen and (max-width: 768px) {
     body{margin: 0;
     width: 100vw;}
@@ -269,11 +259,11 @@ main {
     }
 
     .planet-window {
-        top: 6vh;
+        top: 8vh;
         left: 5vw;
         transform: none;
         width: 80vw;
-        height: 80vh;
+        height: 70vh;
         max-width: none;
         max-height: none;
     }
