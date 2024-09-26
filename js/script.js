@@ -3,6 +3,15 @@ const systemeAPI = fetch("https://api.le-systeme-solaire.net/rest/bodies/");
 const colorPlanet = [[174,233,255],[30,95,247],[238,200,112],[232,130,28],[201,164,62],[249,235,109],[116,116,213],[246,182,7]];
 let listObjects = [];
 let planetWindow, planetList, planetInfo, backButton, toggleButton;
+let stars = [];
+let sky = 0;
+let cameraX = 0;
+let cameraY = 0;
+let cameraSpeed = 5;
+
+let cols = 50;
+let rows = 50;
+let vertices = [];
 
 /**
  * Créer le lien avec l'API et récupère les données.
@@ -23,9 +32,25 @@ systemeAPI.then(response => {
 /**
  * Initialise le canvas
 */
+let btnD;
+
 function setup(){
     createCanvas(windowWidth, windowHeight, WEBGL);
     createSliders();
+    btnD = createButtonDirectional();
+
+    // Create stars
+    for (let i = 0; i < 300; i++) {
+        stars[i] = new Star(
+        random(-width/2, width/2),  // x position
+        random(-height/2, height/2), // y position
+        random(-500, 0),  // z position (depth)
+        random(255),  // color
+        random(0.1, 3),  // twinkle speed
+        random(1)  // twinkle direction
+        );
+    }
+
     planetWindow = document.getElementById("planet-window");
     planetList = document.getElementById("planet-list");
     planetInfo = document.getElementById("planet-info");
@@ -34,6 +59,10 @@ function setup(){
 
     backButton.addEventListener("click", showPlanetList);
     toggleButton.addEventListener("click", togglePlanetWindow);
+
+    //texture planet and sun
+    imageMode(CENTER);
+    createSun()
 
 }
 
@@ -47,16 +76,12 @@ function createSliders() {
     zoom.parent('zoom-slider');
     zoom.class('slider');
 
-    translateX = createSlider(-500, 500, 0, 1);
-    translateX.parent('translate-slider');
-    translateX.class('slider');
-
     orbitSpeedSlider = createSlider(0, 1, 1, 0.001);
     orbitSpeedSlider.parent('orbit-speed-slider');
     orbitSpeedSlider.class('slider');
 
     // Array of sliders for easy iteration if needed
-    let sliders = [zoom, translateX, orbitSpeedSlider];
+    let sliders = [zoom, orbitSpeedSlider];
 
     // Additional configuration can be done here if needed
     sliders.forEach(slider => {
@@ -75,24 +100,124 @@ function togglePlanetWindow() {
     }
 }
 
+function createButtonDirectional() {
+    return new Directional(
+        width * 0.5,  // Changez la position si nécessaire
+        height * 0.5, // Changez la position si nécessaire
+        250,           // Taille du bouton
+        () => {
+            console.log("Bouton directionnel pressé");
+        }
+    );
+}
+
 /**
  * Affiche l'animation chaque frames
 */
-function draw(){
-    background(0,0,0,0);
-    ambientLight(5, 5, 5); // white light
-    pointLight(250, 250, 250, 0, 0, 200);
+function draw() {
+    background(sky);
+  
+    for (let i = 0; i < stars.length; i++) {
+        stars[i].twinkle();
+        stars[i].showStar();
+    }
+    
+    // Add a subtle ambient light
+    ambientLight(20, 20, 20);
+    
     noStroke();
     fill(255);
     angleMode(DEGREES);
-    translate(-translateX.value(),0,zoom.value());
+    btnD.show();
+    translate(cameraX, cameraY, zoom.value());
     rotateX(-20);
     push();
-    emissiveMaterial(255, 255, 100);
     rotateY(-millis()/30);
-    sphere(70);
+    drawSun();
     pop();
     createPlanet();
+}
+
+function createSun() {
+    noStroke();
+    for (let theta = 0; theta <= rows; theta++) {
+        vertices.push([]);
+        for (let phi = 0; phi <= cols; phi++) {
+            let noiseX = map(sin(theta * PI / rows) * cos(phi * TWO_PI / cols), -1, 1, 0, 2);
+            let noiseY = map(cos(theta * PI / rows), -1, 1, 0, 4);
+            let noiseZ = map(sin(theta * PI / rows) * sin(phi * TWO_PI / cols), -1, 1, 0, 2);
+
+            let noiseValue = noise(noiseX, noiseY, noiseZ);
+            noiseValue = pow(noiseValue, 0.5); // Increase contrast
+            
+            // Base color (brighter)
+            let r = map(noiseValue, 0, 1, 220, 255);
+            let g = map(noiseValue, 0, 1, 150, 240);
+            let b = map(noiseValue, 0, 1, 50, 100);
+            
+            // Emissive color (even brighter)
+            let emissiveR = map(noiseValue, 0, 1, 200, 255);
+            let emissiveG = map(noiseValue, 0, 1, 100, 220);
+            let emissiveB = map(noiseValue, 0, 1, 0, 80);
+            
+            let pos = createVector(
+                70 * sin(theta * PI / rows) * cos(phi * TWO_PI / cols),
+                70 * cos(theta * PI / rows),
+                70 * sin(theta * PI / rows) * sin(phi * TWO_PI / cols)
+            );
+            
+            vertices[theta].push([
+                pos, 
+                color(r, g, b),
+                color(emissiveR, emissiveG, emissiveB)
+            ]);
+        }
+    }
+}
+
+function drawSun(){
+    push();
+    for(let theta = 0; theta < vertices.length - 1; theta++){
+        for(let phi = 0; phi < vertices[theta].length - 1; phi++){
+            let colorValue1 = vertices[theta][phi][1];
+            let emissiveValue1 = vertices[theta][phi][2];
+            let colorValue2 = vertices[theta+1][phi][1];
+            let emissiveValue2 = vertices[theta+1][phi][2];
+            let colorValue3 = vertices[theta+1][phi+1][1];
+            let emissiveValue3 = vertices[theta+1][phi+1][2];
+            let colorValue4 = vertices[theta][phi+1][1];
+            let emissiveValue4 = vertices[theta][phi+1][2];
+            
+            beginShape(TRIANGLES);
+            
+            fill(colorValue1);
+            emissiveMaterial(emissiveValue1);
+            vertex(vertices[theta][phi][0].x, vertices[theta][phi][0].y, vertices[theta][phi][0].z);
+            
+            fill(colorValue2);
+            emissiveMaterial(emissiveValue2);
+            vertex(vertices[theta+1][phi][0].x, vertices[theta+1][phi][0].y, vertices[theta+1][phi][0].z);
+            
+            fill(colorValue3);
+            emissiveMaterial(emissiveValue3);
+            vertex(vertices[theta+1][phi+1][0].x, vertices[theta+1][phi+1][0].y, vertices[theta+1][phi+1][0].z);
+            
+            fill(colorValue1);
+            emissiveMaterial(emissiveValue1);
+            vertex(vertices[theta][phi][0].x, vertices[theta][phi][0].y, vertices[theta][phi][0].z);
+            
+            fill(colorValue3);
+            emissiveMaterial(emissiveValue3);
+            vertex(vertices[theta+1][phi+1][0].x, vertices[theta+1][phi+1][0].y, vertices[theta+1][phi+1][0].z);
+            
+            fill(colorValue4);
+            emissiveMaterial(emissiveValue4);
+            vertex(vertices[theta][phi+1][0].x, vertices[theta][phi+1][0].y, vertices[theta][phi+1][0].z);
+            
+            endShape();
+        }
+    }
+    pop();
 }
 
 /**
@@ -227,4 +352,143 @@ function showPlanetInfo() {
     planetInfo.classList.remove("hidden");
 }
 
+class Star {
+    constructor(tx, ty, tz, tc, tf, td) {
+      this.x = tx;
+      this.y = ty;
+      this.z = tz;
+      this.c = tc;
+      this.f = tf;
+      this.down = td;
+    }
+  
+    showStar() {
+      push();
+      translate(this.x, this.y, this.z);
+      stroke(this.c);
+      strokeWeight(1.9);  // Adjust this value to change star size
+      point(0, 0);
+      pop();
+    }
+  
+    twinkle() {
+      if (this.c >= 255) {
+        this.down = true;
+      }
+      if (this.c <= 0) {
+        this.down = false;
+      }
+  
+      if (this.down) {
+        this.c -= this.f;
+      } else {
+        this.c += this.f;
+      }
+    }
+  }
 
+
+function mousePressed() {
+    if (btnD && typeof btnD.isPressed === 'function') {
+        btnD.isPressed();
+    }
+}
+
+class Button {
+    constructor(x, y, r, lbl, callback) {
+        this.x = x;
+        this.y = y;
+        this.r = r;
+        this.lbl = lbl;
+        this.color = "white";
+        this.callback = callback;
+    }
+
+    show() {
+        push();
+        ellipseMode(RADIUS);
+        fill(this.color);
+        stroke("black");
+        strokeWeight(2);
+        circle(this.x, this.y, this.r);
+        fill("black");
+        textSize(this.r);
+        textAlign(CENTER, CENTER);
+        textFont("Courier New");
+        text(this.lbl, this.x, this.y);
+        pop();
+    }
+
+    isPressed() {
+        if (dist(mouseX, mouseY, this.x, this.y) < this.r) {
+            this.color = color(63, 250, 203);
+            this.execute();
+            return true;
+        }
+        return false;
+    }
+
+    release() {
+        this.color = "white";
+    }
+    
+    execute() {
+        this.callback();
+    }
+}
+
+class Directional extends Button {
+    constructor(x, y, r, callback) {
+        super(x, y, r, "", callback);
+        this.sensitivityFactor = 0.3; // Adjust this value to change sensitivity
+        this.deadZone = 10; // Pixels from center where movement is ignored
+
+    }
+    show() {
+        push();
+        // Utilisez le mode 2D pour dessiner le bouton
+        camera(0, 0, height / 2 / tan(PI / 6), 0, 0, 0, 0, 1, 0);
+        ortho(-width/2, width/2, -height/2, height/2, 0, 1000);
+        translate(-width/2, -height/2, 0);
+        ellipseMode(RADIUS);
+        fill(this.color);
+        stroke("black");
+        strokeWeight(2);
+        circle(this.x, this.y, this.r);
+        if (this.isPressed()) {
+            fill(229, 22, 185, 150);
+            circle(mouseX, mouseY, this.r * 0.4);
+        }
+        pop();
+    }
+    isPressed() {
+        if (dist(mouseX, mouseY, this.x, this.y) < this.r && mouseIsPressed) {
+            this.changeDir();
+            return true;
+        }
+        return false;
+    }
+    changeDir() {
+        let dx = mouseX - this.x;
+        let dy = mouseY - this.y;
+        let distance = dist(mouseX, mouseY, this.x, this.y);
+
+        // Apply dead zone
+        if (distance < this.deadZone) {
+            return;
+        }
+
+        // Calculate normalized direction
+        let dirX = dx / distance;
+        let dirY = dy / distance;
+
+        // Apply sensitivity factor and scale by distance from center
+        let scaleFactor = map(distance, this.deadZone, this.r, 0, 1);
+        let moveX = dirX * this.sensitivityFactor * scaleFactor;
+        let moveY = dirY * this.sensitivityFactor * scaleFactor;
+
+        // Update camera position
+        cameraX += moveX * cameraSpeed;
+        cameraY += moveY * cameraSpeed;
+    }
+}
