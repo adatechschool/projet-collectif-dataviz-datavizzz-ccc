@@ -259,11 +259,11 @@ main {
     }
 
     .planet-window {
-        top: 8vh;
+        top: 9vh;
         left: 5vw;
         transform: none;
         width: 80vw;
-        height: 70vh;
+        height: 60vh;
         max-width: none;
         max-height: none;
     }

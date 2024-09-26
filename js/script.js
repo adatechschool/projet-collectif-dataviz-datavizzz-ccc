@@ -140,7 +140,10 @@ function draw() {
     rotateX(-20);
     push();
     rotateY(millis()/100);
-    drawSun();
+    pointLight(255, 255, 200, 0, 0, 800);
+    emissiveMaterial(255, 200, 0);
+    sphere(70)
+    //drawSun();
     pop();
     createPlanet();
 }
@@ -450,7 +453,7 @@ class Button {
 class Directional extends Button {
     constructor(x, y, r, callback) {
         super(x, y, r, "", callback);
-        this.sensitivityFactor = 0.3; // Adjust this value to change sensitivity
+        this.sensitivityFactor = 0.5; // Adjust this value to change sensitivity
         this.deadZone = 10; // Pixels from center where movement is ignored
 
     }
